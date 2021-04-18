@@ -23,12 +23,14 @@ export default {
       id: userId
     });
   },
+
   async loadCoaches(context) {
     const res = await fetch('https://vue-http-demo-3c99d-default-rtdb.firebaseio.com/coaches.json');
     const resData = await res.json();
 
     if (!res.ok) {
-      //error
+      const error = new Error(resData.message || 'Failed to fetch!');
+      throw error;
     }
 
     const coaches = [];

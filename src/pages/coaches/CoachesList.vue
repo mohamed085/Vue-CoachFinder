@@ -1,4 +1,7 @@
 <template>
+  <base-dialog :show="!!error" @close="handleErrorMessage">
+    <p>{{ error }}</p>
+  </base-dialog>
   <section>
     <coach-filter @change-filter="setFilters"></coach-filter>
   </section>
@@ -30,17 +33,16 @@
 <script>
 import CoachItem from '../../components/coaches/CoachItem.vue';
 import CoachFilter from '../../components/coaches/CoachFilter.vue';
-import BaseSpinner from "../../components/ui/BaseSpinner";
 
 export default {
   components: {
-    BaseSpinner,
     CoachItem,
     CoachFilter,
   },
   data() {
     return {
       isLoading: false,
+      error: null,
       activeFilters: {
         frontend: true,
         backend: true,
@@ -80,8 +82,15 @@ export default {
     },
     async loadCoaches() {
       this.isLoading = true;
-      await this.$store.dispatch('coaches/loadCoaches');
+      try {
+        await this.$store.dispatch('coaches/loadCoaches');
+      } catch (e) {
+        this.error = e.message || 'Something went wrong!';
+      }
       this.isLoading = false;
+    },
+    handleErrorMessage() {
+      this.error = null
     }
   },
 };

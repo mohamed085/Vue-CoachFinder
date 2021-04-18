@@ -1,9 +1,8 @@
 <template>
   <div>
-    <base-dialog fixed :show="!!error" title="Error occurred...">
+    <base-dialog fixed :show="!!error" @close="handleError" title="Error occurred...">
       <p>{{ error }}</p>
     </base-dialog>
-
     <base-dialog fixed :show="isLoading" title="Authenticating...">
       <p>Authenticating</p>
       <base-spinner></base-spinner>
@@ -72,11 +71,14 @@ export default {
 
       try {
         if (this.mode === 'login') {
-          // ...
+          await this.$store.dispatch('login', {
+            email: this.email,
+            password: this.password
+          })
         } else {
           await this.$store.dispatch('signup', {
             email: this.email,
-            password: this.password,
+            password: this.password
           });
         }
       } catch (e) {
@@ -93,6 +95,9 @@ export default {
         this.mode = 'login';
       }
     },
+    handleError() {
+      this.error = null;
+    }
   },
 };
 </script>

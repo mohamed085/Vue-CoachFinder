@@ -81,6 +81,7 @@ export default {
             password: this.password
           });
         }
+        await this.$router.replace('/coaches');
       } catch (e) {
         this.error = e.message || 'Failed to authenticate.';
       }
